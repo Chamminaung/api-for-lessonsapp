@@ -24,6 +24,20 @@ router.get("/:courseId", async (req, res) => {
   }
 });
 
+
+//get lesson with course id and lesson id
+router.get("/:courseId/:lessonId", async (req, res) => {
+  try {
+    const courseLessons = await Lesson.findOne({ courseId: req.params.courseId });
+    if (!courseLessons) return res.status(404).json({ message: "Course not found" });
+    const lesson = courseLessons.lessons.find(l => l.id === req.params.lessonId);
+    if (!lesson) return res.status(404).json({ message: "Lesson not found" });
+    res.json(lesson);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // ADD a new lesson to a course
 router.post("/:courseId", async (req, res) => {
   const { id, title, videoUrl } = req.body;

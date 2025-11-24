@@ -1,14 +1,14 @@
-import express from "express";
-import mongoose from "mongoose";
+import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
+import express from "express";
+import mongoose from "mongoose";
 import Tesseract from "tesseract.js";
-import bodyParser from "body-parser";
 // Import routes
-import courseRoutes from "./routes/courseRoutes.js";
-import paymentRoutes from "./routes/paymentRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import courseRoutes from "./routes/courseRoutes.js";
 import lessonRoutes from "./routes/lessonRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 
 dotenv.config();
 
@@ -17,7 +17,11 @@ app.use(cors());
 app.use(express.json());
 
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 30000, // 30 seconds
+})
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
 
