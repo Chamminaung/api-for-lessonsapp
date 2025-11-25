@@ -1,7 +1,6 @@
 import express from "express";
-const Tesseract = require("tesseract.js");
-const bodyParser = require("body-parser");
-
+import Tesseract from "tesseract.js";
+import bodyParser from "body-parser";
 const router = express.Router();
 
 router.use(bodyParser.json({ limit: "50mb" }));
