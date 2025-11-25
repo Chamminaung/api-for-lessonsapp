@@ -1,29 +1,50 @@
+// routes/ocrRoutes.js
 import express from "express";
+import multer from "multer";
 import Tesseract from "tesseract.js";
-import bodyParser from "body-parser";
+import path from "path";
+import fs from "fs";
+
 const router = express.Router();
 
-router.use(bodyParser.json({ limit: "50mb" }));
+// Multer - memory storage
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB per file
+});
 
-// OCR endpoint
-router.post("/ocr", async (req, res) => {
+// Accept multiple files (field name "images")
+router.post("/ocr", upload.array("images", 10), async (req, res) => {
   try {
-    const { image } = req.body;
-    if (!image) return res.status(400).json({ error: "No image provided" });
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: "No image files received" });
+    }
 
-    // tesseract.js v4+ simplified usage
-    const { data } = await Tesseract.recognize(
-      image,
-      "eng+mya", // English + Myanmar
-      {
-        logger: function(m){ console.log(m); } // Node.js compatible
-      }
-    );
+    const results = [];
 
-    res.json({ text: data.text });
+    // sequential processing to avoid memory/CPU spikes; you can parallelize later if you want
+    for (const file of req.files) {
+      const tempPath = path.join("/tmp", `${Date.now()}-${file.originalname}`);
+      fs.writeFileSync(tempPath, file.buffer);
+
+      // run OCR (language set to eng+mya as before)
+      const { data } = await Tesseract.recognize(tempPath, "eng+mya", {
+        logger: (m) => console.log(`[Tesseract] ${file.originalname}`, m),
+      });
+
+      results.push({
+        fileName: file.originalname,
+        text: data.text,
+      });
+
+      // remove temp file
+      try { fs.unlinkSync(tempPath); } catch(e){ console.warn("unlink failed", e); }
+    }
+
+    res.json({ success: true, results });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "OCR failed" });
+    console.error("OCR endpoint error:", err);
+    res.status(500).json({ error: "OCR failed", details: err.message });
   }
 });
 
