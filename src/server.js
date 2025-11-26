@@ -8,6 +8,7 @@ import courseRoutes from "./routes/courseRoutes.js";
 import lessonRoutes from "./routes/lessonRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import ocrRoutes from "./routes/ocrRoutes.js";
+import paymentTestRoutes from "./routes/paymentTestRoutes.js";
 
 dotenv.config();
 
@@ -28,6 +29,8 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/ocr", ocrRoutes);
+app.use("/api/paymenttests", paymentTestRoutes);
+
 
 app.listen(process.env.PORT || 3000, () => console.log(`Server running on port ${process.env.PORT || 3000}`));
   
