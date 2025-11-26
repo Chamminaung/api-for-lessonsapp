@@ -1,7 +1,8 @@
+import mongoose from "mongoose";
 // ----------------------
 // Payment Schema
 // ----------------------
-const paymentSchema = new mongoose.Schema({
+const paymentSchematest = new mongoose.Schema({
 userId: { type: String, required: true },
 method: { type: String, required: true },
 amount: { type: Number, default: null },
@@ -16,4 +17,4 @@ timestamp: { type: Date, default: Date.now },
 });
 
 
-const Payment = mongoose.model("PaymentTest", paymentSchema);
+export default  mongoose.model("PaymentTest", paymentSchematest);

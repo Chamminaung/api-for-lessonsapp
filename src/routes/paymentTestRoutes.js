@@ -1,3 +1,6 @@
+import express from "express";
+import mongoose from "mongoose";
+import PaymentTest from "../models/PaymentTest.js";
 // ----------------------
 // Router
 // ----------------------
@@ -16,7 +19,7 @@ return res.status(400).json({ error: "base64Image missing" });
 }
 
 
-const payment = await Payment.create({
+const payment = await   PaymentTest.create({
 userId,
 method,
 amount,
@@ -37,7 +40,7 @@ res.status(500).json({ error: "Server error" });
 // 2. Admin: Get all payments
 router.get("/all", async (req, res) => {
 try {
-const payments = await Payment.find().sort({ timestamp: -1 });
+const payments = await PaymentTest.find().sort({ timestamp: -1 });
 res.json({ payments });
 } catch (err) {
 res.status(500).json({ error: "Server error" });
