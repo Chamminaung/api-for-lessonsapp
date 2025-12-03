@@ -12,10 +12,17 @@ const router = express.Router();
 // POST /api/payments/pay
 router.post('/pay', async (req, res) => {
 try {
-const { phone, deviceId, courseId, transactionId, transactionDateTime } = req.body;
+const { deviceId,
+        courseId, 
+        method, 
+        amount, 
+        status, 
+        transactionId, 
+        transactionDateTime } = req.body;
 
 
-if (!phone || !deviceId || !courseId || !transactionId) {
+
+if (!deviceId || !courseId || !transactionId) {
 return res.status(400).json({ error: 'Missing required fields' });
 }
 
@@ -26,14 +33,16 @@ if (exists) return res.status(400).json({ error: 'Transaction already used' });
 
 
 // Validate course exists
-const course = await Course.findOne({ id: courseId });
+const course = await Course.findById(courseId);
 if (!course) return res.status(400).json({ error: 'Invalid courseId' });
 
 
 const p = await Payment.create({
-phone,
 deviceId,
-courseId: course.id,
+courseId,
+method,
+amount,
+status,
 transactionId,
 transactionDateTime: transactionDateTime ? new Date(transactionDateTime) : new Date()
 });
@@ -49,11 +58,11 @@ res.status(500).json({ error: 'Server error' });
 
 // GET /api/payments/check?phone=...&deviceId=...&courseId=...
 router.get('/check', async (req, res) => {
-const { phone, deviceId, courseId } = req.query;
-if (!phone || !deviceId || !courseId) return res.json({ paid: false });
+const {  deviceId, courseId } = req.query;
+if (!deviceId || !courseId) return res.json({ paid: false });
 
 
-const payment = await Payment.findOne({ phone, deviceId, courseId });
+const payment = await Payment.findOne({ deviceId, courseId });
 res.json({ paid: !!payment });
 });
 
