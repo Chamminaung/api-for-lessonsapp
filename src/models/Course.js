@@ -7,7 +7,8 @@ description: String,
 thumbnailUrl: String,
 free: { type: Boolean, default: false },
 paid: { type: Boolean, default: false },
-lessons: { type: mongoose.Schema.Types.ObjectId, ref: 'Lesson', required: true }
+lessons: { type: mongoose.Schema.Types.ObjectId, ref: 'Lesson', required: true },
+price: { type: String, default: "0" }
 }, { timestamps: true });
 
 
