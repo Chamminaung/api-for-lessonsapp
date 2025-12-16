@@ -4,7 +4,8 @@ import mongoose from "mongoose";
 const lessonSchema = new mongoose.Schema({
 id: { type: String, required: true },
 title: { type: String, required: true },
-videoUrl: { type: String, required: true }
+videoUrl: { type: String, required: true },
+watched: { type: Boolean, default: false }
 }, { _id: false});
 
 const lessonsSchema = new mongoose.Schema({
