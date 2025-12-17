@@ -10,7 +10,7 @@ const router = express.Router();
 /**
  * CONFIG
  */
-const CODE_EXPIRE_MINUTES = 60; // ⏱️ 60 min (change as needed)
+const CODE_EXPIRE_MINUTES = 60 * 24; // ⏱️ 60 min (change as needed)
 
 /**
  * Helpers
