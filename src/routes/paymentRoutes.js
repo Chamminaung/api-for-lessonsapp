@@ -188,25 +188,24 @@ router.get("/check", async (req, res) => {
 // =====================================================
 router.post("/activate-code", async (req, res) => {
   try {
-    const { deviceId, courseId, code } = req.body;
+    let { deviceId, courseId, code } = req.body;
 
     if (!deviceId || !courseId || !code) {
       return res.status(400).json({ error: "Missing fields" });
     }
+
+    // ensure deviceId is string
+    deviceId = String(deviceId);
 
     const payment = await Payment.findOne({
       courseId,
       status: "Approved",
     });
 
-    if (!payment) {
-      return res.status(404).json({ error: "Payment not found" });
-    }
+    if (!payment) return res.status(404).json({ error: "Payment not found" });
 
     // already activated
-    if (
-      payment.activatedDevices.some(d => d.deviceId === deviceId)
-    ) {
+    if (payment.activatedDevices.some(d => d.deviceId === deviceId)) {
       return res.json({ success: true });
     }
 
@@ -216,10 +215,7 @@ router.post("/activate-code", async (req, res) => {
     }
 
     // expired
-    if (
-      payment.shareCode.expiresAt &&
-      new Date() > payment.shareCode.expiresAt
-    ) {
+    if (payment.shareCode.expiresAt && new Date() > payment.shareCode.expiresAt) {
       return res.status(400).json({ error: "Code expired" });
     }
 
@@ -251,6 +247,7 @@ router.post("/activate-code", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+
 
 
 
