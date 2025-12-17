@@ -260,30 +260,41 @@ router.post("/activate-code", async (req, res) => {
 // =====================================================
 router.get("/share-code", async (req, res) => {
   try {
-    const { courseId } = req.query;
-    if (!courseId) {
-      return res.status(400).json({ error: "courseId required" });
+    const { courseId, deviceId } = req.query;
+
+    if (!courseId || !deviceId) {
+      return res.status(400).json({ error: "courseId & deviceId required" });
     }
 
     const payment = await Payment.findOne({
       courseId,
+      deviceId,
       status: "Approved",
     });
 
-    if (!payment) {
-      return res.status(404).json({ error: "Payment not found" });
+    if (!payment || !payment.shareCode) {
+      return res.status(404).json({ error: "Share code not found" });
+    }
+
+    // expiry check
+    if (
+      payment.shareCode.expiresAt &&
+      new Date(payment.shareCode.expiresAt) < new Date()
+    ) {
+      return res.status(410).json({ error: "Share code expired" });
     }
 
     res.json({
-      code: payment.shareCode?.code || null,
-      used: payment.shareCode?.used || false,
-      expiresAt: payment.shareCode?.expiresAt || null,
+      code: payment.shareCode.code,
+      used: payment.shareCode.used,
+      expiresAt: payment.shareCode.expiresAt,
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
 });
+
 
 export default router;
 
