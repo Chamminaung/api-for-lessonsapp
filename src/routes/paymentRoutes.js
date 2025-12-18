@@ -271,7 +271,7 @@ router.get("/share-code", async (req, res) => {
     }
 
     const payment = await Payment.findOne({
-      // courseId,
+      courseId,
       deviceId,
       status: "Approved",
     });
