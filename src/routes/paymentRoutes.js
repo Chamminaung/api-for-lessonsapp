@@ -264,34 +264,46 @@ router.post("/activate-code", async (req, res) => {
 // =====================================================
 router.get("/share-code", async (req, res) => {
   try {
-    const { courseId, deviceId } = req.query;
+    const { deviceId } = req.query;
 
-    if (!courseId || !deviceId) {
-      return res.status(400).json({ error: "courseId & deviceId required" });
+    if (!deviceId) {
+      return res.status(400).json({ error: "deviceId required" });
     }
 
-    const payment = await Payment.findOne({
-      courseId,
+    const payment = await Payment.find({
+      // courseId,
       deviceId,
       status: "Approved",
     });
 
-    if (!payment || !payment.shareCode) {
+    if (!payment) {
       return res.status(404).json({ error: "Share code not found" });
     }
 
-    // expiry check
-    if (
-      payment.shareCode.expiresAt &&
-      new Date(payment.shareCode.expiresAt) < new Date()
-    ) {
-      return res.status(410).json({ error: "Share code expired" });
+    const data = payment.filter(p => p.shareCode && !p.shareCode.used);
+    if (data.length === 0) {
+      return res.status(404).json({ error: "Share code not found" });
     }
 
+    const shareableCodePayment = [];
+    for (let i = 0; i < data.length; i++) {
+      shareableCodePayment.push(
+        {code: data[i].shareCode.code, 
+          used: data[i].shareCode.used, 
+          expiresAt: data[i].shareCode.expiresAt, 
+          courseId: data[i].courseId});
+    }
+      // expiry check
+    // expiry check
+    // if (
+    //   payment.shareCode.expiresAt &&
+    //   new Date(payment.shareCode.expiresAt) < new Date()
+    // ) {
+    //   return res.status(410).json({ error: "Share code expired" });
+    // }
+
     res.json({
-      code: payment.shareCode.code,
-      used: payment.shareCode.used,
-      expiresAt: payment.shareCode.expiresAt,
+      codes: shareableCodePayment
     });
   } catch (err) {
     console.error(err);
