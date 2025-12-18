@@ -67,7 +67,10 @@ router.post("/pay", async (req, res) => {
         : new Date(),
 
       allowedDevices: 2,
-      activatedDevices: [],
+      activatedDevices: [{
+      deviceId,
+      activatedAt: new Date(),
+    }],
       shareCode: {
         code: generate4DigitCode(),
         used: false,
@@ -195,7 +198,7 @@ router.post("/activate-code", async (req, res) => {
     }
 
     // ensure deviceId is string
-    deviceId = String(deviceId);
+    //deviceId = String(deviceId);
 
     const payment = await Payment.findOne({
       courseId,
@@ -235,7 +238,11 @@ router.post("/activate-code", async (req, res) => {
       activatedAt: new Date(),
     });
 
-    payment.shareCode.used = true;
+    if (payment.activatedDevices.length >= payment.allowedDevices) {
+      payment.shareCode.used = true;
+      //return res.status(400).json({ error: "Device limit exceeded" });
+    }
+    //payment.shareCode.used = true;
     payment.shareCode.usedByDevice = deviceId;
     payment.shareCode.usedAt = new Date();
 
