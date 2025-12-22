@@ -10,6 +10,9 @@ import lessonRoutes from "./routes/lessonRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import ocrRoutes from "./routes/ocrRoutes.js";
 import paymentTestRoutes from "./routes/paymentTestRoutes.js";
+import courseProgressRoutes from "./routes/courseProgressRoutes.js";
+
+// Load environment variables
 
 dotenv.config();
 
@@ -44,6 +47,7 @@ async function startServer() {
     app.use("/api/lessons", lessonRoutes);
     app.use("/api/ocr", ocrRoutes);
     app.use("/api/paymenttests", paymentTestRoutes);
+    app.use("/api/courseprogress", courseProgressRoutes);
 
     // 🔥 Fix: Start server AFTER routes loaded
     const PORT = process.env.PORT || 3000;
