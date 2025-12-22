@@ -22,6 +22,34 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// POST or UPDATE course progress
+router.post("/", async (req, res) => {
+  try {
+    const { deviceId, courseId, completedLessons, lastLesson, status } = req.body;
+    let progress = await CourseProgress.findOne({ deviceId, courseId });
+
+    if (progress) {
+      progress.completedLessons = completedLessons;
+      progress.lastLesson = lastLesson;
+      progress.status = status;
+      await progress.save();
+    } else {
+      progress = await CourseProgress.create({
+        deviceId,
+        courseId,
+        completedLessons,
+        lastLesson,
+        status
+      });
+    }
+
+    res.json({ message: "Progress updated successfully", progress });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;
 
 
