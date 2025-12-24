@@ -10,7 +10,8 @@ watched: { type: Boolean, default: false }
 
 const lessonsSchema = new mongoose.Schema({
 courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
-lessons: [lessonSchema]
+lessons: [lessonSchema],
+order: Number,
 }, { timestamps: true });
 
 export default mongoose.model('Lesson', lessonsSchema);
