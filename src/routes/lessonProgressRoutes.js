@@ -62,6 +62,7 @@ router.post("/watched", async (req, res) => {
 
     res.json(progress);
   } catch (err) {
+    console.error("WATCHED ERROR:", err); // ⭐ အရေးကြီး
     res.status(500).json({ error: err.message });
   }
 });
