@@ -7,7 +7,7 @@ const CourseProgressSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Course",
   },
-  completedLessons: Number,
+  completedLessons: String,
   lastLesson: {
     lessonId: String,
     title: String,
