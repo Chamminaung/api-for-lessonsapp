@@ -46,6 +46,7 @@ router.post("/", async (req, res) => {
 
     res.json({ message: "Progress updated successfully", progress });
   } catch (error) {
+    console.error("COURSE PROGRESS ERROR:", error); // ⭐ အရေးကြီး
     res.status(500).json({ error: error.message });
   }
 });
