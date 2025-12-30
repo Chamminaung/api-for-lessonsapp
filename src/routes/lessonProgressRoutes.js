@@ -15,7 +15,7 @@ router.get("/:courseId", async (req, res) => {
 
     const lessonsobj = await Lesson.find({ courseId }).sort({ order: 1 });
     console.log("LESSONS:", lessonsobj); // ⭐ အရေးကြီး
-    const lessons = lessonsobj.lessons || [];
+    const lessons = lessonsobj[0][lessons] || [];
     console.log("LESSONS ARRAY:", lessons); // ⭐ အရေးကြီး
 
     const progresses = await LessonProgress.find({
