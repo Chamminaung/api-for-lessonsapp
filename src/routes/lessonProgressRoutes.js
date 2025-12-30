@@ -13,8 +13,10 @@ router.get("/:courseId", async (req, res) => {
     const { courseId } = req.params;
     const { deviceId } = req.query;
 
-    const lessons = await Lesson.find({ courseId }).sort({ order: 1 }).lessons;
-    console.log("LESSONS:", lessons); // ⭐ အရေးကြီး
+    const lessonsobj = await Lesson.find({ courseId }).sort({ order: 1 });
+    console.log("LESSONS:", lessonsobj); // ⭐ အရေးကြီး
+    const lessons = lessonsobj.lessons || [];
+    console.log("LESSONS ARRAY:", lessons); // ⭐ အရေးကြီး
 
     const progresses = await LessonProgress.find({
       courseId,
