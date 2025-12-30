@@ -27,16 +27,16 @@ router.get("/:courseId", async (req, res) => {
 
     const watchedMap = {};
     progresses.forEach(p => {
-      watchedMap[p.lessonId.toString()] = true;
+      watchedMap[p.lessonId] = true;
     });
     console.log("WATCHED MAP:", watchedMap); // ⭐ အရေးကြီး
 
     const result = lessons.map(l => ({
-      _id: l._id,
+      id: l.id,
       title: l.title,
       videoUrl: l.videoUrl,
       order: l.order,
-      watched: watchedMap[l._id.toString()] || false,
+      watched: watchedMap[l.id] || false,
     }));
     console.log("RESULT:", result); // ⭐ အရေးကြီး
 
