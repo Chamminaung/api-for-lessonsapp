@@ -14,17 +14,20 @@ router.get("/:courseId", async (req, res) => {
     const { deviceId } = req.query;
 
     const lessons = await Lesson.find({ courseId }).sort({ order: 1 });
+    console.log("LESSONS:", lessons); // ⭐ အရေးကြီး
 
     const progresses = await LessonProgress.find({
       courseId,
       deviceId,
       watched: true,
     });
+    console.log("PROGRESSES:", progresses); // ⭐ အရေးကြီး
 
     const watchedMap = {};
     progresses.forEach(p => {
       watchedMap[p.lessonId.toString()] = true;
     });
+    console.log("WATCHED MAP:", watchedMap); // ⭐ အရေးကြီး
 
     const result = lessons.map(l => ({
       _id: l._id,
@@ -33,6 +36,7 @@ router.get("/:courseId", async (req, res) => {
       order: l.order,
       watched: watchedMap[l._id.toString()] || false,
     }));
+    console.log("RESULT:", result); // ⭐ အရေးကြီး
 
     res.json(result);
   } catch (err) {
