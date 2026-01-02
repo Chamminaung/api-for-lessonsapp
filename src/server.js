@@ -14,6 +14,7 @@ import courseProgressRoutes from "./routes/courseProgressRoutes.js";
 import lessonProgressRoutes from "./routes/lessonProgressRoutes.js";
 import userDeviceRoutes from "./routes/userDeviceRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js"
+import adminDevicesRoutes from "./routes/adminDevicesRoutes.js";
 
 // Load environment variables
 
@@ -54,6 +55,7 @@ async function startServer() {
     app.use("/api/lessonprogress", lessonProgressRoutes);
     app.use("/api/userdevices", userDeviceRoutes);
     app.use("/api/admin", adminRoutes);
+    app.use("/api/admindevices", adminDevicesRoutes);
 
     // 🔥 Fix: Start server AFTER routes loaded
     const PORT = process.env.PORT || 3000;
