@@ -84,6 +84,24 @@ router.put("/:courseId/:lessonId", async (req, res) => {
   }
 });
 
+//Update lesson watched status
+router.patch("/:courseId/:lessonId/watched", async (req, res) => {
+  const { watched } = req.body;
+  try {
+    const courseLessons = await Lesson.findOne({ courseId: req.params.courseId });
+    if (!courseLessons) return res.status(404).json({ message: "Course not found" });
+
+    const lesson = courseLessons.lessons.find(l => l.id === req.params.lessonId);
+    if (!lesson) return res.status(404).json({ message: "Lesson not found" });
+
+    lesson.watched = watched;
+    const updated = await courseLessons.save();
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 // DELETE a lesson from a course
 router.delete("/:courseId/:lessonId", async (req, res) => {
   try {

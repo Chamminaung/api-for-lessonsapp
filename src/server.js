@@ -12,6 +12,7 @@ import ocrRoutes from "./routes/ocrRoutes.js";
 import paymentTestRoutes from "./routes/paymentTestRoutes.js";
 import courseProgressRoutes from "./routes/courseProgressRoutes.js";
 import lessonProgressRoutes from "./routes/lessonProgressRoutes.js";
+import userDeviceRoutes from "./routes/userDeviceRoutes.js";
 
 // Load environment variables
 
@@ -50,6 +51,7 @@ async function startServer() {
     app.use("/api/paymenttests", paymentTestRoutes);
     app.use("/api/courseprogress", courseProgressRoutes);
     app.use("/api/lessonprogress", lessonProgressRoutes);
+    app.use("/api/userdevices", userDeviceRoutes);
 
     // 🔥 Fix: Start server AFTER routes loaded
     const PORT = process.env.PORT || 3000;
