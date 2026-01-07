@@ -12,7 +12,7 @@ router.get("/", async (req, res) => {
 
     res.json({
       progress: {
-        completedLessons: progress?.completedLessons || 0,
+        completedLessons: progress?.completedLessons || [],
         totalLessons: 20,
       },
       lastLesson: progress?.lastLesson || null,
@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
     let progress = await CourseProgress.findOne({ deviceId, courseId });
 
     if (progress) {
-      progress.completedLessons = completedLessons;
+      progress.completedLessons = [...progress.completedLessons, ...completedLessons];
       progress.lastLesson = lastLesson;
       progress.status = status;
       await progress.save();
@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
       progress = await CourseProgress.create({
         deviceId,
         courseId,
-        completedLessons,
+        completedLessons: progress ? [...progress.completedLessons, ...completedLessons] : completedLessons,
         lastLesson,
         status
       });
