@@ -24,32 +24,72 @@ router.get("/", async (req, res) => {
 });
 
 // POST or UPDATE course progress
+
 router.post("/", async (req, res) => {
   try {
-    const { deviceId, courseId, completedLessons, lastLesson, status } = req.body;
-    let progress = await CourseProgress.findOne({ deviceId, courseId });
+    const {
+      deviceId,
+      courseId,
+      completedLessons = [],
+      lastLesson,
+      status
+    } = req.body;
 
-    if (progress) {
-      progress.completedLessons = [...progress.completedLessons, ...completedLessons];
-      progress.lastLesson = lastLesson;
-      progress.status = status;
-      await progress.save();
-    } else {
-      progress = await CourseProgress.create({
-        deviceId,
-        courseId,
-        completedLessons: progress ? [...progress.completedLessons, ...completedLessons] : completedLessons,
-        lastLesson,
-        status
-      });
-    }
+    const progress = await CourseProgress.findOneAndUpdate(
+      { deviceId, courseId },
+      {
+        $addToSet: {
+          completedLessons: { $each: completedLessons }
+        },
+        $set: {
+          lastLesson,
+          status
+        }
+      },
+      {
+        new: true,
+        upsert: true // 🔥 မရှိရင် create လုပ်ပေးမယ်
+      }
+    );
 
-    res.json({ message: "Progress updated successfully", progress });
+    res.json({
+      message: "Progress updated successfully",
+      progress
+    });
   } catch (error) {
-    console.error("COURSE PROGRESS ERROR:", error); // ⭐ အရေးကြီး
+    console.error("COURSE PROGRESS ERROR:", error);
     res.status(500).json({ error: error.message });
   }
 });
+
+
+
+// router.post("/", async (req, res) => {
+//   try {
+//     const { deviceId, courseId, completedLessons, lastLesson, status } = req.body;
+//     let progress = await CourseProgress.findOne({ deviceId, courseId });
+
+//     if (progress) {
+//       progress.completedLessons = [...progress.completedLessons, ...completedLessons];
+//       progress.lastLesson = lastLesson;
+//       progress.status = status;
+//       await progress.save();
+//     } else {
+//       progress = await CourseProgress.create({
+//         deviceId,
+//         courseId,
+//         completedLessons: progress ? [...progress.completedLessons, ...completedLessons] : completedLessons,
+//         lastLesson,
+//         status
+//       });
+//     }
+
+//     res.json({ message: "Progress updated successfully", progress });
+//   } catch (error) {
+//     console.error("COURSE PROGRESS ERROR:", error); // ⭐ အရေးကြီး
+//     res.status(500).json({ error: error.message });
+//   }
+// });
 
 export default router;
 
