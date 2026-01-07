@@ -35,6 +35,11 @@ router.post("/", async (req, res) => {
       status
     } = req.body;
 
+    // 🔥 ALWAYS make it an array
+    if (!Array.isArray(completedLessons)) {
+      completedLessons = completedLessons ? [completedLessons] : [];
+    }
+
     const progress = await CourseProgress.findOneAndUpdate(
       { deviceId, courseId },
       {
