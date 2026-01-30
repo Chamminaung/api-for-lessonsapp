@@ -204,6 +204,7 @@ router.post("/activate-code", async (req, res) => {
     const payment = await Payment.findOne({
       courseId,
       status: "Approved",
+      "shareCode.code": code,
     });
 
     if (!payment) return res.status(404).json({ error: "Payment not found" });
