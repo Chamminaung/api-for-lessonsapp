@@ -152,7 +152,7 @@ router.get("/check", async (req, res) => {
       return res.json({ access: false });
     }
 
-    const payment = await Payment.findOne({
+    const payment = await Payment.find({
       courseId,
       status: "Approved",
     });
