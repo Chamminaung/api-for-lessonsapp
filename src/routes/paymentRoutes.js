@@ -155,6 +155,7 @@ router.get("/check", async (req, res) => {
     const payment = await Payment.findOne({
       courseId,
       status: "Approved",
+      "activatedDevices.deviceId": deviceId,
     });
 
     if (!payment) {
