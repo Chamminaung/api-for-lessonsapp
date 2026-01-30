@@ -173,7 +173,6 @@ router.get("/check", async (req, res) => {
     res.json({
       access: isActivated,
       canUseCode:
-        !isActivated &&
         !payment.shareCode?.used &&
         !codeExpired &&
         payment.activatedDevices.length < payment.allowedDevices,
